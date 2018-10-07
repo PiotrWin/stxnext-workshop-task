@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { hot } from 'react-hot-loader';
+
+import classes from './App.scss';
+import Form from 'components/Form/Form';
+
 
 class App extends Component {
   state = {
@@ -8,11 +11,11 @@ class App extends Component {
 
   render() {
     return (
-      <div>
-        {this.state.test ? 'Hello world' : null}
+      <div className={classes.App}>
+        <Form />
       </div>
     );
   }
 }
 
-export default hot(module)(App);
+export default App;
