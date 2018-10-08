@@ -1,0 +1,15 @@
+.Gallery {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 50px;
+  width: 100%;
+
+  img {
+    box-shadow: 0 10px 24px 0 rgba(0, 0, 0, 0.75);
+    margin: 10px;
+    max-width: 40%;
+    width: 40%;
+  }
+}

@@ -1,9 +1,19 @@
 @import '~shared/styles/index.scss';
 
 .App {
+  left: 0;
+  margin: auto;
+  padding: 20px;
+  right: 0;
+
+  border: 1px solid black;
+}
+
+.Wrapper {
   align-items: center;
   display: flex;
-  flex-direction: column;
+  flex-flow: column;
   justify-content: center;
-  padding: 20px;
+  overflow: hidden;
+  width: 100%;
 }

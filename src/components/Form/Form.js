@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import axios from 'utils/axios';
 
 import FormInput from 'components/FormInput/FormInput';
 import FormSelect from 'components/FormSelect/FormSelect';
 import Button from 'components/Button/Button';
 import classes from './Form.scss';
-
 
 class Form extends Component {
   state = {
@@ -14,15 +15,40 @@ class Form extends Component {
       'birds (ptaki)',
       'random (losowe)',
     ],
-    chosenType: 'shibes',
+    chosenType: null,
     fetchCount: 1,
+    fetchedImages: [],
     valid: false,
+    loading: false,
   }
 
   getInputValidationStatus = (isValid, number) => {
-    if (isValid) this.setState({ valid: isValid, fetchCount: Number(number) });
-    else this.setState({ valid: isValid });
+    if (isValid) {
+      this.setState({ valid: isValid, fetchCount: Number(number) });
+    } else {
+      this.setState({ valid: isValid });
+    }
   }
+
+
+  fetchImages = () => {
+    let [type] = (this.state.chosenType || this.state.animalTypes[0])
+      .split(' ');
+    if (type === 'random') {
+      const randomId =
+        Math.floor(Math.random() * (this.state.animalTypes.length - 1));
+      [type] = this.state.animalTypes[randomId].split(' ');
+    }
+    axios.get(`/${type}?count=${this.state.fetchCount}`)
+      .then((response) => {
+        this.setState({ fetchedImages: response.data }, () => {
+          this.props.onFetchedResults(this.state.fetchedImages);
+        });
+      })
+      .catch((error) => {
+        console.warn(error);
+      });
+  };
 
   handleSelectChange = (value) => {
     this.setState({ chosenType: value });
@@ -30,10 +56,25 @@ class Form extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    console.log('submit');
+    if (this.state.valid) {
+      this.fetchImages();
+    }
   }
 
   render() {
+    let buttonProps;
+    if (this.state.loading) {
+      buttonProps = {
+        text: 'Ładowanie danych',
+        enabled: false,
+      };
+    } else {
+      buttonProps = {
+        text: 'Szukaj',
+        enabled: this.state.valid,
+      };
+    }
+
     return (
       <form className={classes.Form} onSubmit={this.handleSubmit}>
         <FormInput
@@ -49,10 +90,22 @@ class Form extends Component {
           label="Typ zwierzaka"
           changed={this.handleSelectChange}
         />
-        <Button text="Szukaj" enabled={this.state.valid} />
+        <Button
+          text={buttonProps.text}
+          enabled={buttonProps.enabled}
+          clicked={this.handleSubmit}
+        />
       </form>
     );
   }
 }
+
+Form.propTypes = {
+  onFetchedResults: PropTypes.func,
+};
+
+Form.defaultProps = {
+  onFetchedResults: null,
+};
 
 export default Form;
