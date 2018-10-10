@@ -1,5 +1,7 @@
+@import '~shared/styles/index.scss';
+
 .FormInput {
-  margin: 10px;
+  margin: $margin-small;
   width: 100px;
 }
 

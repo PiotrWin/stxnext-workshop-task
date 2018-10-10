@@ -14,32 +14,33 @@ class App extends Component {
       'random (losowe)',
     ],
     chosenType: null,
-    fetchCount: 1,
+    error: false,
     fetchedImages: [],
+    imageCount: 1,
     loading: false,
     valid: false,
   }
 
   fetchImages = () => {
-    this.setState({ loading: true });
+    this.setState({ error: false, loading: true });
     let [type] = (this.state.chosenType || this.state.animalTypes[0]).split(' ');
     if (type === 'random') {
       const randomId =
         Math.floor(Math.random() * (this.state.animalTypes.length - 1));
       [type] = this.state.animalTypes[randomId].split(' ');
     }
-    axios.get(`/${type}?count=${this.state.fetchCount}`)
+    axios.get(`/${type}?count=${this.state.imageCount}`)
       .then((response) => {
         this.setState({ fetchedImages: response.data, loading: false });
       })
-      .catch((error) => {
-        console.warn(error);
+      .catch(() => {
+        this.setState({ error: true, loading: false });
       });
   };
 
   checkInputValidationStatus = (isValid, number) => {
     if (isValid) {
-      this.setState({ valid: isValid, fetchCount: Number(number) });
+      this.setState({ valid: isValid, imageCount: Number(number) });
     } else {
       this.setState({ valid: isValid });
     }
@@ -69,6 +70,10 @@ class App extends Component {
             selectOptions={this.state.animalTypes}
             valid={this.state.valid}
           />
+          {this.state.error ?
+            <div className={classes.ErrorMessage}>Ups! Coś poszło nie tak.</div>
+            : null
+          }
           <Gallery links={this.state.fetchedImages} />
         </div>
       </div>

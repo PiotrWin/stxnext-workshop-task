@@ -1,19 +1,21 @@
 @import '~shared/styles/index.scss';
 
 .App {
+  font-family: $font-primary;
   left: 0;
   margin: auto;
-  padding: 20px;
+  padding: $margin-medium;
   right: 0;
+}
 
-  border: 1px solid black;
+.ErrorMessage {
+  border-bottom: 2px solid $color-red;
+  margin-top: $margin-small;
 }
 
 .Wrapper {
-  align-items: center;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
+  @extend %flex-center-both;
+
   overflow: hidden;
   width: 100%;
 }
