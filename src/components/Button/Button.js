@@ -16,7 +16,8 @@ const button = (props) => {
       onClick={props.clicked}
     >
       {props.text}
-    </button>);
+    </button>
+  );
 };
 
 button.propTypes = {
