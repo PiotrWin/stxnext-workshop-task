@@ -21,5 +21,7 @@ module.exports = {
     'react/jsx-filename-extension': [
       2, { extensions: ['.js'] },
     ],
+    'react/no-array-index-key': 0,
+    'linebreak-style': [1, 'windows'],
   },
 };
