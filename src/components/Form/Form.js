@@ -1,111 +1,65 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'utils/axios';
 
 import FormInput from 'components/FormInput/FormInput';
 import FormSelect from 'components/FormSelect/FormSelect';
 import Button from 'components/Button/Button';
 import classes from './Form.scss';
 
-class Form extends Component {
-  state = {
-    animalTypes: [
-      'shibes (psy)',
-      'cats (koty)',
-      'birds (ptaki)',
-      'random (losowe)',
-    ],
-    chosenType: null,
-    fetchCount: 1,
-    fetchedImages: [],
-    valid: false,
-    loading: false,
+const form = (props) => {
+  let buttonProps;
+  if (props.loading) {
+    buttonProps = {
+      text: 'Ładowanie danych',
+      enabled: false,
+    };
+  } else {
+    buttonProps = {
+      text: 'Szukaj',
+      enabled: props.valid,
+    };
   }
 
-  getInputValidationStatus = (isValid, number) => {
-    if (isValid) {
-      this.setState({ valid: isValid, fetchCount: Number(number) });
-    } else {
-      this.setState({ valid: isValid });
-    }
-  }
-
-
-  fetchImages = () => {
-    let [type] = (this.state.chosenType || this.state.animalTypes[0])
-      .split(' ');
-    if (type === 'random') {
-      const randomId =
-        Math.floor(Math.random() * (this.state.animalTypes.length - 1));
-      [type] = this.state.animalTypes[randomId].split(' ');
-    }
-    axios.get(`/${type}?count=${this.state.fetchCount}`)
-      .then((response) => {
-        this.setState({ fetchedImages: response.data }, () => {
-          this.props.onFetchedResults(this.state.fetchedImages);
-        });
-      })
-      .catch((error) => {
-        console.warn(error);
-      });
-  };
-
-  handleSelectChange = (value) => {
-    this.setState({ chosenType: value });
-  }
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    if (this.state.valid) {
-      this.fetchImages();
-    }
-  }
-
-  render() {
-    let buttonProps;
-    if (this.state.loading) {
-      buttonProps = {
-        text: 'Ładowanie danych',
-        enabled: false,
-      };
-    } else {
-      buttonProps = {
-        text: 'Szukaj',
-        enabled: this.state.valid,
-      };
-    }
-
-    return (
-      <form className={classes.Form} onSubmit={this.handleSubmit}>
-        <FormInput
-          type="number"
-          required
-          min={1}
-          max={10}
-          changed={this.getInputValidationStatus}
-          label="Liczba zdjęć"
-        />
-        <FormSelect
-          options={this.state.animalTypes}
-          label="Typ zwierzaka"
-          changed={this.handleSelectChange}
-        />
-        <Button
-          text={buttonProps.text}
-          enabled={buttonProps.enabled}
-          clicked={this.handleSubmit}
-        />
-      </form>
-    );
-  }
-}
-
-Form.propTypes = {
-  onFetchedResults: PropTypes.func,
+  return (
+    <form className={classes.Form} onSubmit={props.onSubmit}>
+      <FormInput
+        type="number"
+        required
+        min={1}
+        max={10}
+        changed={props.onInputChanged}
+        label="Liczba zdjęć:"
+      />
+      <FormSelect
+        options={props.selectOptions}
+        label="Typ zwierzaka:"
+        changed={props.onSelectChanged}
+      />
+      <Button
+        text={buttonProps.text}
+        enabled={buttonProps.enabled}
+        clicked={props.onSubmit}
+      />
+    </form>
+  );
 };
 
-Form.defaultProps = {
-  onFetchedResults: null,
+form.propTypes = {
+  loading: PropTypes.bool,
+  onInputChanged: PropTypes.func,
+  onSelectChanged: PropTypes.func,
+  onSubmit: PropTypes.func,
+  selectOptions: PropTypes.instanceOf(Array),
+  valid: PropTypes.bool,
 };
 
-export default Form;
+form.defaultProps = {
+  loading: false,
+  onInputChanged: null,
+  onSelectChanged: null,
+  onSubmit: null,
+  selectOptions: [],
+  valid: false,
+};
+
+export default form;

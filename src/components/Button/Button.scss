@@ -1,14 +1,17 @@
+@import '~shared/styles/index.scss';
+
 .Button {
-  border: 1px solid #000;
-  color: #fff;
-  margin-top: 25px;
-  padding: 10px;
+  border: 1px solid $color-black;
+  color: $color-white;
+  margin-top: $margin-medium;
+  padding: $margin-small;
+  width: 200px;
 }
 
 .Enabled {
-  background-color: green;
+  background-color: $color-green;
 }
 
 .Disabled {
-  background-color: grey;
+  background-color: $color-grey;
 }
