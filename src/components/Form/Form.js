@@ -7,6 +7,8 @@ import FormSelect from 'components/FormSelect/FormSelect';
 import Button from 'components/Button/Button';
 import classes from './Form.scss';
 
+// TODO: move some of the state to App
+
 class Form extends Component {
   state = {
     animalTypes: [
@@ -32,8 +34,8 @@ class Form extends Component {
 
 
   fetchImages = () => {
-    let [type] = (this.state.chosenType || this.state.animalTypes[0])
-      .split(' ');
+    this.setState({ loading: true });
+    let [type] = (this.state.chosenType || this.state.animalTypes[0]).split(' ');
     if (type === 'random') {
       const randomId =
         Math.floor(Math.random() * (this.state.animalTypes.length - 1));
@@ -41,7 +43,7 @@ class Form extends Component {
     }
     axios.get(`/${type}?count=${this.state.fetchCount}`)
       .then((response) => {
-        this.setState({ fetchedImages: response.data }, () => {
+        this.setState({ fetchedImages: response.data, loading: false }, () => {
           this.props.onFetchedResults(this.state.fetchedImages);
         });
       })
